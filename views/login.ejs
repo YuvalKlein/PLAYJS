@@ -1,0 +1,26 @@
+<% include partials/header %>
+
+<div class="container">
+	<img id="logo" src="assets/src/logo bmp.bmp" width="100" height="100">
+	<form action="/login" method="POST">
+	  <div class="form-group">
+	    <input type="text" name="username" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="User Name">
+	    <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
+	  </div>
+	  <div class="form-group">
+	    <input type="password" name="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+	  </div>
+	  <small id="emailHelp" class="form-text text-muted"><a href="">Forgot Password</a></small>
+	  <button type="submit" class="btn btn-primary">Login</button>
+	  <p id="register"><a href="/register">Register now</a></p>
+	  <button class="loginBtn loginBtn--facebook">
+  Login with Facebook
+</button>
+
+<button class="loginBtn loginBtn--google">
+  Login with Google
+</button>
+	</form>
+</div>
+
+<% include partials/footer %>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>PLAY</title>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/bootstrap.css">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+	<link rel="stylesheet" type="text/css" href="/stylesheets/app.css">
+</head>
+<body>
+
+	<nav class="navbar navbar-dark bg-dark">
+  <a class="navbar-brand" href="/index"><img src="/src/logo.bmp" width="40" height="40" alt="">
+  </a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <% if(!currentUser){ %>
+          <a class="nav-link" href="/login"><i class="fas fa-user-circle"></i> Welcome! <span class="sr-only">(current)</span></a>
+        <% } else { %>
+          <a class="nav-link" href="/profile"><i class="fas fa-user-circle"></i> Hey <%= currentUser.firstname %><span class="sr-only">(current)</span></a>
+        <% } %>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/index">Schedule</a>
+        <a class="nav-link" href="/myClasses">My Classes</a>
+        <a class="nav-link" href="/contact">Contact Us</a>
+        <% if(currentUser){ %>
+          <a class="nav-link" href="/logout">Loguot</a>
+        <% }%>
+      </li>
+      
+    </ul>
+    
+  </div>
+</nav>

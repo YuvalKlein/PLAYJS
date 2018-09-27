@@ -1,0 +1,45 @@
+<% include partials/header %>
+
+<div class="container-fluid">
+  
+    <a href="/index/new" type="button">New Class</a>
+
+  <div class="day">
+    <h4>Today</h4>
+  </div>
+
+
+    <% classes.forEach(function(classs) { %>
+      <div class="unit d-flex flex-row bd-highlight mb-3">
+         
+        <div class="p-2 bd-highlight col-2">
+            <div class="row hour"><%= classs.time.getHours() + ":00" %></div>
+            <div class="row hour"><%= classs.time.getHours() + 1 + ":00" %></div>
+        </div>
+        <div class="p-2 bd-highlight col-7">
+            <div class="row name"><a href="/index/<%= classs._id %>"><%= classs.title %></a></div>
+            <div class="row instructor"><%= classs.instructor %></div>
+            <div class="row place"><%= classs.location %></div>
+      
+        </div>
+        <!--if currentUser not sign in -->
+        <%=classs.players.firstname%>
+        <% if(!classs.players.currentUser){ %>
+        <form action="/index/<% classs._id %>" method="POST">
+          <div class="p-2 bd-highlight col-3"><input type="submit" class="btn btn-secondary btn-lg" id="button" value="BOOK"></div>
+        </form>
+         <!--else ( add toggle for the color)-->
+        <% } else { %>
+        <form action="/index/<% classs._id %>?_method=DELETE" method="POST">
+          <div class="p-2 bd-highlight col-3"><button type="button" class="btn btn-secondary btn-lg" id="button booked">CANCEL</button></div>
+        </form>
+        <% } %>
+      </div>
+    <% }); %>
+    <div class="unit"></div>
+    <div class="unit"></div>
+    <div class="unit"></div>
+
+</div>
+
+<% include partials/footer %>
