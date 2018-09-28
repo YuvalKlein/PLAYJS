@@ -1,5 +1,5 @@
-var faker           = require('faker'),
-    mongoose        = require("mongoose"),
+//var faker           = require('faker'),
+var    mongoose        = require("mongoose"),
     User            = require("./models/user"),
     Instructor      = require("./models/instructor"),
     Class           = require("./models/class");    
@@ -20,12 +20,12 @@ function seedDB() {
         } 
         console.log("removed Instructors");
     });
-    Class.remove({}, function(err){
-        if(err){
-            console.log(err);
-        } 
-        console.log("removed classes");
-    });
+    // Class.remove({}, function(err){
+    //     if(err){
+    //         console.log(err);
+    //     } 
+    //     console.log("removed classes");
+    // });
     for(var i = 0; i < 30; i++){
         User.create(
             {

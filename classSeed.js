@@ -1,5 +1,5 @@
-var faker           = require('faker'),
-    mongoose        = require("mongoose"),
+//var faker           = require('faker'),
+ var   mongoose        = require("mongoose"),
     User            = require("./models/user"),
     Instructor      = require("./models/instructor"),
     Class           = require("./models/class");    
