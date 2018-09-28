@@ -15,9 +15,9 @@ var indexRoutes = require("./routes/index");
 
 
 // APP CONFIG
-mongodb://localhost/play_app
-//mongoose.connect(process.env.DATABASEURL);
-mongoose.connect("mongodb://yuklein:y11111@ds115523.mlab.com:15523/play");
+var url = process.env.DATABASEURL || "mongodb://localhost/play_app"
+mongoose.connect(url);
+
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
