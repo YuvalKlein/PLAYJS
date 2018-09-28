@@ -33,16 +33,13 @@ router.post("/index", middleware.isLogedin, function(req, res){
         image = req.body.image,
         location = req.body.location,
         time = req.body.time,
-        players = {id: req.user._id, username: req.user.username, firstname: req.user.firstname, lastname: req.user.lastname},
+        players = [{id: req.user._id, firstname: req.user.firstname, lastname: req.user.lastname}],
         createdBy = {
             id: req.user._id,
-            username: req.user.username,
             firstname: req.user.firstname,
             lastname: req.user.lastname
-        },
-        user = JSON.stringify(createdBy);
+        };
     var newClass = {title: title, image: image, location: location, time: time};
-    console.log("user: " + user);
     console.log("createdBy: " + createdBy);
     console.log("id type: : " + typeof req.user._id);
     console.log("id type: : " + typeof createdBy.id);
