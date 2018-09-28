@@ -23,8 +23,13 @@ router.get("/index", function(req, res){
 
 // NEW CLASS
 router.get("/index/new", middleware.isLogedin, function(req, res) {
-    var instructors = Instructor.find({});
-    res.render("newclass", {instructors: instructors});
+    Instructor.find({}).exec(function(err, instructors){
+        if(err){
+            console.log(err);
+        } else {
+            res.render("newclass", {instructors: instructors});
+        }
+    });
 });
 
 // CREATE CLASS
@@ -35,14 +40,16 @@ router.post("/index", middleware.isLogedin, function(req, res){
         location: req.body.location, 
         time: req.body.time,
         players: [{id: req.user._id, firstname: req.user.firstname, lastname: req.user.lastname}],
-        createdBy: {id: req.user._id, firstname: req.user.firstname, lastname: req.user.lastname}
+        createdBy: {id: req.user._id, firstname: req.user.firstname, lastname: req.user.lastname},
+        instructor: {id: req.body.instructor._id, firstname: req.body.instructor.firstname, lastname: req.body.instructor.lastname}
     };
-    console.log(JSON.stringify(newClass));
-    Class.create(newClass, function(err, newclass){
+    console.log(req.body.instructor)
+
+    Class.create(newClass, function(err, createdClass){
         if(err){
             console.log(err);
         } else {
-            res.render("/index/:id");
+            res.redirect(`/index/${createdClass._id.toString()}`);
         }
     });
 });   
@@ -50,8 +57,9 @@ router.post("/index", middleware.isLogedin, function(req, res){
 // SHOW CLASS
 router.get("/index/:id", function(req, res) {
     Class.findById(req.params.id).populate("users").exec(function(err, foundClass){
-        if(err){
-            console.log(err);
+        if(err || !foundClass){
+            req.flash("error", "Class not found");
+            res.redirect("back");
         } else {
             res.render("show", {classs: foundClass});
         }
@@ -73,7 +81,7 @@ router.get("/myClasses", middleware.isLogedin, function(req, res) {
 });
 
 // SIGN TO A CLASS
-router.post("index/:id", middleware.isLogedin, function(req, res){
+router.put("class/:id", middleware.isLogedin, function(req, res){
     Class.findByIdAndUpdate(req.params.id, req.body.classs, function(err, signToClass) {
         if(err){
             console.log(err);
@@ -133,11 +141,11 @@ router.post("/register", function(req, res){
     var newUser = new User({username: req.body.username, firstname: req.body.firstname, lastname: req.body.lastname, email: req.body.email});
     User.register(newUser, req.body.password, function(err, user){
         if(err){
-            console.log(err);
+            req.flash("error", err.message);
             return res.render("register");
         }
         passport.authenticate("local")(req, res, function(){
-            console.log("xxhxfhjjgxgxhfxfj")
+            req.flash("success", "Welcome" + user.firstname);
             res.redirect("/index");
             
         });
@@ -161,6 +169,7 @@ router.post("/login", passport.authenticate("local",
 // LOGOUT
 router.get("/logout", function(req, res) {
     req.logout();
+    req.flash("success", "Successfully loged out!");
     res.redirect("/index");
 });
 
