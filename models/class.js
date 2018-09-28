@@ -1,5 +1,4 @@
-var mongoose = require("mongoose"),
-    passportLocalMongoose = require("passport-local-mongoose");
+var mongoose = require("mongoose");
     
 var ClassSchema = new mongoose.Schema({
     title: String,
@@ -34,7 +33,5 @@ var ClassSchema = new mongoose.Schema({
     }
     ]
 });
-
-ClassSchema.plugin(passportLocalMongoose);
 
 module.exports = mongoose.model("Class", ClassSchema);

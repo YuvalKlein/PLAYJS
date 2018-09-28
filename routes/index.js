@@ -37,6 +37,7 @@ router.post("/index", middleware.isLogedin, function(req, res){
         players: [{id: req.user._id, firstname: req.user.firstname, lastname: req.user.lastname}],
         createdBy: {id: req.user._id, firstname: req.user.firstname, lastname: req.user.lastname}
     };
+    console.log(JSON.stringify(newClass));
     Class.create(newClass, function(err, newclass){
         if(err){
             console.log(err);
@@ -44,18 +45,7 @@ router.post("/index", middleware.isLogedin, function(req, res){
             res.render("/index/:id");
         }
     });
-});
-                
-//             console.log("varim: " + title + image + location + time + players + createdBy);
-//             console.log("newClass" + newClass);
-//             console.log("newclass" + newclass);
-//             console.log(err);
-//             res.render("newclass");
-//         } else {
-//             res.redirect("/index");
-//         }
-//     });
-// });
+});   
 
 // SHOW CLASS
 router.get("/index/:id", function(req, res) {
