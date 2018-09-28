@@ -29,39 +29,19 @@ router.get("/index/new", middleware.isLogedin, function(req, res) {
 
 // CREATE CLASS
 router.post("/index", middleware.isLogedin, function(req, res){
-    var title = req.body.title,
-        image = req.body.image,
-        location = req.body.location,
-        time = req.body.time,
-        players = [{id: req.user._id, firstname: req.user.firstname, lastname: req.user.lastname}],
-        createdBy = {
-            id: req.user._id,
-            firstname: req.user.firstname,
-            lastname: req.user.lastname
-        };
-    var newClass = {title: title, image: image, location: location, time: time};
-    console.log("createdBy: " + createdBy);
-    console.log("id type: : " + typeof req.user._id);
-    console.log("id type: : " + typeof createdBy.id);
-    console.log("createdByDetaild: " + createdBy.id + createdBy.username + createdBy.firstname + createdBy.lastname);
+    var newClass = {
+        title: req.body.title,
+        image: req.body.image, 
+        location: req.body.location, 
+        time: req.body.time,
+        players: [{id: req.user._id, firstname: req.user.firstname, lastname: req.user.lastname}],
+        createdBy: {id: req.user._id, firstname: req.user.firstname, lastname: req.user.lastname}
+    };
     Class.create(newClass, function(err, newclass){
         if(err){
             console.log(err);
         } else {
-            req.user._id, function(err, user) {
-                if(err){
-                    console.log(err);
-                } else {
-                    newclass.createdBy.push(user);
-                    newclass.save(function(err, data) {
-                        if(err) {
-                            console.log(err);
-                        } else {
-                            console.log(data);
-                        }
-                    });
-                }
-            }
+            res.render("/index/:id");
         }
     });
 });
