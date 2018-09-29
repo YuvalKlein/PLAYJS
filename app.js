@@ -15,7 +15,7 @@ var indexRoutes = require("./routes/index");
 
 
 // APP CONFIG
-var url = process.env.DATABASEURL || "mongodb://localhost/play_app"
+var url = process.env.DATABASEURL || "mongodb://yuklein:y11111@ds115523.mlab.com:15523/play"  //|| mongodb://localhost/play_app"
 mongoose.connect(url);
 
 app.set("view engine", "ejs");

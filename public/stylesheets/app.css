@@ -6,6 +6,10 @@ body {
   background-position: center; 
 }
 
+.container {
+	min-width: 330px;
+}
+
 .comingSoon{
   color: white;
   font-size: 100px;
