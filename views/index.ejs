@@ -1,8 +1,6 @@
 <% include partials/header %>
 
 <div class="container-fluid">
-  
-    <a href="/index/new" type="button">New Class</a>
 
   <div class="day">
     <h4>Today</h4>
@@ -17,23 +15,24 @@
             <div class="row hour"><%= classs.time.getHours() + 1 + ":00" %></div>
         </div>
         <div class="p-2 bd-highlight col-7">
-            <div class="row name"><a href="/index/<%= classs._id %>"><%= classs.title %></a></div>
+            <div class="row name" id="class-name"><a href="/index/<%= classs._id %>"><%= classs.title %></a></div>
             <div class="row instructor"><%= classs.instructor %></div>
             <div class="row place"><%= classs.location %></div>
       
         </div>
         <!--if currentUser not sign in -->
-        <%=classs.players.firstname%>
-        <% if(!classs.players.currentUser){ %>
-        <form action="/class/<% classs._id %>" method="POST">
-          <div class="p-2 bd-highlight col-3"><input type="submit" class="btn btn-secondary btn-lg" id="button" value="BOOK"></div>
-        </form>
-         <!--else ( add toggle for the color)-->
-        <% } else { %>
-        <form action="/index/<% classs._id %>?_method=DELETE" method="POST">
-          <div class="p-2 bd-highlight col-3"><button type="button" class="btn btn-secondary btn-lg" id="button booked">CANCEL</button></div>
-        </form>
-        <% } %>
+        <%classs.players.forEach(function(player) {%>
+          <% if(!player.id.equals(currentUser._id)){ %>
+            <form action="/class/<% classs._id %>?_method=PUT" method="POST">
+              <div class="p-2 bd-highlight col-3"><input type="submit" class="btn btn-secondary btn-lg" id="button" value="BOOK"></div>
+            </form>
+            <!--else ( add toggle for the color)-->
+          <% } else { %>
+            <form action="/index/<% classs._id %>?_method=DELETE" method="POST">
+              <div class="p-2 bd-highlight col-3"><button type="button" class="btn btn-secondary btn-lg" id="button booked">CANCEL</button></div>
+            </form>
+          <% } %>
+        <% }) %>
       </div>
     <% }); %>
     <div class="unit"></div>
@@ -41,5 +40,19 @@
     <div class="unit"></div>
 
 </div>
+
+<div class="fixed-action-btn">
+  <a class="btn-floating btn-large waves-effect waves-light red" href="/index/new" type="button">
+    <i class="material-icons">add</i>
+  </a>
+</div>
+
+<!-- document.addEventListener('DOMContentLoaded', function() { 
+  var elems = document.querySelectorAll('.fixed-action-btn');
+  var instances = M.FloatingActionButton.init(elems, options);
+});  -->
+
+<script type="text/javascript" src="../public/js/index.js"></script>
+
 
 <% include partials/footer %>

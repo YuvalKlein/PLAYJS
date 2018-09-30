@@ -1,45 +1,35 @@
 <% include partials/header %>
 
-<div class="container">
-    <div class="row">
-        
-        <div>
-            <div class="thumbnail">
-                <div>
-                    <h2><%= classs.title %></h2>
-                </div>
-                <img class="image-responsive" src="<%= classs.image %>">
-                <div class="coption-full">
-                    <p>
-                        <em><a>Created By <%= classs.createdBy.firstname + " " + classs.createdBy.lastname %></a></em>
-                    </p>
-                    <h4><a><%= classs.instructor %></a></h4>
-                    <p><%= classs.time %></p>
-                    <p><%= classs.location %></p>
-                </div>
-            </div>
-            <div class="well">
-                <% classs.players.forEach(function(player){ %> 
-                    <div class="row">
-                        <div class="col-md-12">
-                            <strong><%= classs.players %> + " " + <%=classs.players.lastname %></strong>
-
-                        </div>
-                        <% if(currentUser && classs.createdBy.id.equals(currentUser._id)) { %>
-                            <div>
-                                <a class="btn btn-warning" href="/index/<%= classs._id %>/edit">Edit</a>
-                                <form id="delete-form" action="/index/<%= classs._id %>?_method=DELETE" method="POST">
-                                    <button class="btn btn-danger">Delete</button>
-                                </form>
-                            </div>
-                        <% } %>
-                    </div>
-                    
-                <% }) %>
-            </div>
-        </div>
+<div class="container show-container">
+    <div class="thumbnail">          
+            <h2><%= classs.title %></h2>
     </div>
+    <img class="image-responsive" src="<%= classs.image %>">
+    <div class="coption-full">
+        <p>
+            <em><a>Created By <%= classs.createdBy.firstname + " " + classs.createdBy.lastname %></a></em>
+        </p>
+        <h4><a><%= classs.instructor %></a></h4>
+        <p><%= classs.time %></p>
+        <p><%= classs.location %></p>
+    </div>
+    <div class="well">
+        <% classs.players.forEach(function(player){ %> 
+            <div class="row">
+                <div class="col-md-12">
+                    <strong><%= player.firstname %> <%=player.lastname %></strong>
+                </div>
+                <% if(currentUser && classs.createdBy.id.equals(currentUser._id)) { %>
+                        <a class="btn btn-warning" href="/index/<%= classs._id %>/edit">Edit</a>
+                        <form id="delete-form" action="/index/<%= classs._id %>?_method=DELETE" method="POST">
+                            <button class="btn btn-danger">Delete</button>
+                        </form>
+            </div>
+                <% } %>
+    </div>            
+        <% }) %>
 </div>
+
 
 
 

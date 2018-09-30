@@ -1,7 +1,7 @@
 <% include partials/header %>
 
 <div class="container">
-	<img id="logo" src="assets/src/logo.bmp" width="100" height="100">
+	<img id="logo" src="/src/logo.bmp" width="100" height="100">
 	<form action="/login" method="POST">
 	  <div class="form-group">
 	    <input type="text" name="username" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="User Name">
@@ -11,7 +11,7 @@
 	    <input type="password" name="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
 	  </div>
 	  <small id="emailHelp" class="form-text text-muted"><a href="">Forgot Password</a></small>
-	  <button type="submit" class="btn btn-primary">Login</button>
+	  <button type="submit" id="button" class="btn btn-primary">Login</button>
 	  <p id="register"><a href="/register">Register now</a></p>
 	  <button class="loginBtn loginBtn--facebook">
   Login with Facebook

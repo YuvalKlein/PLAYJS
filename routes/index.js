@@ -74,6 +74,7 @@ router.get("/myClasses", middleware.isLogedin, function(req, res) {
         if(err){
             console.log(err);
         } else {
+            console.log(err);
             res.render("index", {myclasses: myclasses, currentUser: req.user});
         }
     });
