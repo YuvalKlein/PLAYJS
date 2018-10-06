@@ -4,6 +4,8 @@ var ClassSchema = new mongoose.Schema({
     title: String,
     image: {type: String, unique: false},
     location: String,
+    lat: String,
+    lng: String,
     instructor: {
         id: {
             type: mongoose.Schema.Types.ObjectId,

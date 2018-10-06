@@ -28,9 +28,37 @@
                 <% } %>
     </div>            
         <% }) %>
+    <div id="map"></div>
 </div>
 
-
+<script>
+    function initMap() {
+      var lat = <%= classs.lat %>;
+      var lng = <%= classs.lng %>;
+      var center = {lat: lat, lng: lng };
+      var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 8,
+          center: center,
+          scrollwheel: false
+      });
+      var contentString = `
+        <strong><%= classs.name %><br />
+        <%= classs.location %></strong>
+        <p><%= classs.description %></p>
+      `
+      var infowindow = new google.maps.InfoWindow({
+        content: contentString
+      });
+      var marker = new google.maps.Marker({
+          position: center,
+          map: map
+      });
+      marker.addListener('click', function() {
+        infowindow.open(map, marker);
+      });
+    }
+  </script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBYLOJcQfFmChM9hvEjUlfsXB4DvgRrPqc&callback=initMap"></script>
 
 
 <% include partials/footer %>

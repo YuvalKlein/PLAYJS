@@ -18,7 +18,7 @@
                     <select class="form-control" name="instructor">
                         <option value="None">None</option>
                         <% instructors.forEach(function(instructor) { %>
-                            <option value="<%instructor%>"><%=instructor.firstname + " " + instructor.lastname%></option>
+                            <option value="<%= instructor%>"><%=instructor.firstname + " " + instructor.lastname%></option>
                         <% }) %>
                     </select>
                 </div>

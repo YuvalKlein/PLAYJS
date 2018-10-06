@@ -4,7 +4,17 @@ var express = require("express"),
     User = require("../models/user"),
     Instructor = require("../models/instructor"),
     Class = require("../models/class"),
-    middleware = require("../middleware");
+    middleware = require("../middleware"),
+    NodeGeocoder = require('node-geocoder');
+ 
+var options = {
+  provider: 'google',
+  httpAdapter: 'https',
+  apiKey: process.env.GEOCODER_API_KEY,
+  formatter: null
+};
+ 
+var geocoder = NodeGeocoder(options);
 
 router.get("/", function(req, res){
     res.redirect("/index")
@@ -34,24 +44,37 @@ router.get("/index/new", middleware.isLogedin, function(req, res) {
 
 // CREATE CLASS
 router.post("/index", middleware.isLogedin, function(req, res){
+    geocoder.geocode(req.body.location, function (err, data) {
+        if (err || !data.length) {
+            console.log("data " + data);
+          req.flash('error', 'Invalid address');
+          return res.redirect('back');
+        } 
+        var lat = data[0].latitude;
+        var lng = data[0].longitude;
+        var location = data[0].formattedAddress;
     var newClass = {
         title: req.body.title,
         image: req.body.image, 
-        location: req.body.location, 
+        location: location,
+        lat: lat,
+        lng: lng, 
         time: req.body.time,
         players: [{id: req.user._id, firstname: req.user.firstname, lastname: req.user.lastname}],
         createdBy: {id: req.user._id, firstname: req.user.firstname, lastname: req.user.lastname},
         instructor: {id: req.body.instructor._id, firstname: req.body.instructor.firstname, lastname: req.body.instructor.lastname}
     };
-    console.log(req.body.instructor)
+    console.log("newClass.instructor" + newClass.instructor);
+    console.log("req.body.instructor" + req.body.instructor);
 
-    Class.create(newClass, function(err, createdClass){
-        if(err){
-            console.log(err);
-        } else {
-            res.redirect(`/index/${createdClass._id.toString()}`);
-        }
-    });
+        Class.create(newClass, function(err, createdClass){
+            if(err){
+                console.log(err);
+            } else {
+                res.redirect(`/index/${createdClass._id.toString()}`);
+            }
+        });
+    });   
 });   
 
 // SHOW CLASS
@@ -108,14 +131,26 @@ router.get("/index/:id/edit", middleware.checkClassOwnership, function(req, res)
 
 // UPDATE CLASS
 router.put("/index/:id", middleware.checkClassOwnership, function(req, res) {
-    Class.findByIdAndUpdate(req.params.id, req.body.class, function(err, updatedClass){
-        if(err){
-            console.log(err);
-            res.redirect("/index");
-        } else {
-            console.log(updatedClass)
-            res.redirect("/index/" + req.params.id);
+    geocoder.geocode(req.body.location, function (err, data) {
+        if (err || !data.length) {
+          req.flash('error', 'Invalid address');
+          return res.redirect('back');
         }
+        req.body.campground.lat = data[0].latitude;
+        req.body.campground.lng = data[0].longitude;
+        req.body.campground.location = data[0].formattedAddress;
+    
+        Class.findByIdAndUpdate(req.params.id, req.body.class, function(err, updatedClass){
+            if(err){
+                req.flash("error", err.message);
+                console.log(err);
+                res.redirect("back");
+            } else {
+                console.log(updatedClass);
+                req.flash("success","Successfully Updated!");
+                res.redirect("/index/" + req.params.id);
+            }
+        });
     });
 });
     
