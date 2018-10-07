@@ -9,7 +9,7 @@ var express = require("express"),
     LocalStrategy = require("passport-local"),
     User = require("./models/user"),
     Instructor = require("./models/instructor"),
-    Class = require("./models/class"),
+    Session = require("./models/session"),
     seedDB = require("./seeds");
 
 var indexRoutes = require("./routes/index");

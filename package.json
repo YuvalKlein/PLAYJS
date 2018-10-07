@@ -10,6 +10,8 @@
   "author": "Yuval Klein",
   "license": "ISC",
   "dependencies": {
+    "@material/fab": "^0.40.0",
+    "@material/ripple": "^0.40.0",
     "body-parser": "^1.18.3",
     "connect-flash": "^0.1.1",
     "dotenv": "^6.0.0",

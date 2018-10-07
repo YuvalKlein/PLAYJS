@@ -1,15 +1,15 @@
-var Class = require("../models/class");
+var Session = require("../models/session");
 
 var middlewareOBJ = {};
 
-middlewareOBJ.checkClassOwnership = function(req, res, next) {
+middlewareOBJ.checkSessionOwnership = function(req, res, next) {
     if(req.isAuthenticated()) {
-        Class.findById(req.params.id, function(err, foundClass) {
-            if(err || !foundClass) {
+        Session.findById(req.params.id, function(err, foundSession) {
+            if(err || !foundSession) {
                 req.flash("error", err.massage);
                 res.redirect("back");
             } else {
-                if(foundClass.createdBy.id.equals(req.user._id)) {
+                if(foundSession.createdBy.id.equals(req.user._id)) {
                     next();
                 } else {
                     req.flash("error", "You don't have permission");
@@ -22,7 +22,7 @@ middlewareOBJ.checkClassOwnership = function(req, res, next) {
     }
 }
 
-middlewareOBJ.isLogedin = function(req, res, next){
+middlewareOBJ.isLoggedIn = function(req, res, next){
     if(req.isAuthenticated()){
         return next();
     }

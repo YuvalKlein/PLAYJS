@@ -3,7 +3,7 @@ var express = require("express"),
     passport = require("passport"),
     User = require("../models/user"),
     Instructor = require("../models/instructor"),
-    Class = require("../models/class"),
+    Session = require("../models/session"),
     middleware = require("../middleware"),
     NodeGeocoder = require('node-geocoder');
  
@@ -22,28 +22,28 @@ router.get("/", function(req, res){
 
 // INDEX ROUTE
 router.get("/index", function(req, res){
-    Class.find({}, function(err, classes){
+    Session.find({}, function(err, sessions){
         if(err){
             console.log(err);
         } else {
-            res.render("index", {classes: classes, currentUser: req.user});
+            res.render("index", {sessions: sessions, currentUser: req.user});
         }
     });
 });
 
-// NEW CLASS
-router.get("/index/new", middleware.isLogedin, function(req, res) {
+// NEW SESSION
+router.get("/index/new", middleware.isLoggedIn, function(req, res) {
     Instructor.find({}).exec(function(err, instructors){
         if(err){
             console.log(err);
         } else {
-            res.render("newclass", {instructors: instructors});
+            res.render("newsession", {instructors: instructors});
         }
     });
 });
 
-// CREATE CLASS
-router.post("/index", middleware.isLogedin, function(req, res){
+// CREATE SESSION
+router.post("/index", middleware.isLoggedIn, function(req, res){
     geocoder.geocode(req.body.location, function (err, data) {
         if (err || !data.length) {
             console.log("data " + data);
@@ -53,7 +53,7 @@ router.post("/index", middleware.isLogedin, function(req, res){
         var lat = data[0].latitude;
         var lng = data[0].longitude;
         var location = data[0].formattedAddress;
-    var newClass = {
+    var newSession = {
         title: req.body.title,
         image: req.body.image, 
         location: location,
@@ -64,73 +64,73 @@ router.post("/index", middleware.isLogedin, function(req, res){
         createdBy: {id: req.user._id, firstname: req.user.firstname, lastname: req.user.lastname},
         instructor: {id: req.body.instructor._id, firstname: req.body.instructor.firstname, lastname: req.body.instructor.lastname}
     };
-    console.log("newClass.instructor" + newClass.instructor);
+    console.log("newSession.instructor" + newSession.instructor);
     console.log("req.body.instructor" + req.body.instructor);
 
-        Class.create(newClass, function(err, createdClass){
+        Session.create(newSession, function(err, createdSession){
             if(err){
                 console.log(err);
             } else {
-                res.redirect(`/index/${createdClass._id.toString()}`);
+                res.redirect(`/index/${createdSession._id.toString()}`);
             }
         });
     });   
 });   
 
-// SHOW CLASS
+// SHOW SESSION
 router.get("/index/:id", function(req, res) {
-    Class.findById(req.params.id).populate("users").exec(function(err, foundClass){
-        if(err || !foundClass){
-            req.flash("error", "Class not found");
+    Session.findById(req.params.id).populate("users").exec(function(err, foundSession){
+        if(err || !foundSession){
+            req.flash("error", "Session not found");
             res.redirect("back");
         } else {
-            res.render("show", {classs: foundClass});
+            res.render("show", {session: foundSession});
         }
     });
 });
 
-// MY CLASSES
-router.get("/myClasses", middleware.isLogedin, function(req, res) {
+// MY SESSIONS
+router.get("/mySessions", middleware.isLoggedIn, function(req, res) {
     console.log("hjgj",req.log);
-    //find currentUser ID and look just for classes that he signed in
-    Class.find({_id: req.user._id}, function(err, myclasses){
+    //find currentUser ID and look just for sessiones that he signed in
+    Session.find({_id: req.user._id}, function(err, mysessions){
         if(err){
             console.log(err);
         } else {
             console.log(err);
-            res.render("index", {myclasses: myclasses, currentUser: req.user});
+            res.render("index", {mysessions: mysessions, currentUser: req.user});
         }
     });
-    res.render("myClasses");
+    res.render("mySessions");
 });
 
-// SIGN TO A CLASS
-router.put("class/:id", middleware.isLogedin, function(req, res){
-    Class.findByIdAndUpdate(req.params.id, req.body.classs, function(err, signToClass) {
+// SIGN TO A SESSION
+router.put("session/:id", middleware.isLoggedIn, function(req, res){
+    Session.findByIdAndUpdate(req.params.id, req.body.sessions, function(err, signToSession) {
         if(err){
             console.log(err);
             res.redirect("back");
         } else {
-            console.log(signToClass);
+            console.log(signToSession);
             res.redirect("/index");
         }
     });
 });
 
 
-// EDIT CLASS
-router.get("/index/:id/edit", middleware.checkClassOwnership, function(req, res) {
-    Class.findById(req.params.id, function(err, foundClass) {
+// EDIT SESSION
+router.get("/index/:id/edit", middleware.checkSessionOwnership, function(req, res) {
+    Session.findById(req.params.id, function(err, foundSession) {
         if(err){
             res.redirect("/index");
         } else {
-            res.render("edit", {classs: foundClass});
+            res.render("edit", {sessions: foundSession});
         }
     });
 });
 
-// UPDATE CLASS
-router.put("/index/:id", middleware.checkClassOwnership, function(req, res) {
+// UPDATE SESSION
+router.put("/index/:id", middleware.checkSessionOwnership, function(req, res) {
     geocoder.geocode(req.body.location, function (err, data) {
         if (err || !data.length) {
           req.flash('error', 'Invalid address');
@@ -140,13 +140,13 @@ router.put("/index/:id", middleware.checkClassOwnership, function(req, res) {
         req.body.campground.lng = data[0].longitude;
         req.body.campground.location = data[0].formattedAddress;
     
-        Class.findByIdAndUpdate(req.params.id, req.body.class, function(err, updatedClass){
+        Session.findByIdAndUpdate(req.params.id, req.body.session, function(err, updatedSession){
             if(err){
                 req.flash("error", err.message);
                 console.log(err);
                 res.redirect("back");
             } else {
-                console.log(updatedClass);
+                console.log(updatedSession);
                 req.flash("success","Successfully Updated!");
                 res.redirect("/index/" + req.params.id);
             }
@@ -154,9 +154,9 @@ router.put("/index/:id", middleware.checkClassOwnership, function(req, res) {
     });
 });
     
-// DELETE CLASS
-router.delete("index/:id", middleware.checkClassOwnership, function(req, res){
-    Class.findByIdAndRemove(req.params.id, function(err) {
+// DELETE SESSION
+router.delete("index/:id", middleware.checkSessionOwnership, function(req, res){
+    Session.findByIdAndRemove(req.params.id, function(err) {
         if(err){
             console.log(err);
             res.redirect("/index");

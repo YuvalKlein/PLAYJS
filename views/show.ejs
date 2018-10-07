@@ -2,26 +2,26 @@
 
 <div class="container show-container">
     <div class="thumbnail">          
-            <h2><%= classs.title %></h2>
+            <h2><%= session.title %></h2>
     </div>
-    <img class="image-responsive" src="<%= classs.image %>">
+    <img class="image-responsive" src="<%= session.image %>">
     <div class="coption-full">
         <p>
-            <em><a>Created By <%= classs.createdBy.firstname + " " + classs.createdBy.lastname %></a></em>
+            <em><a>Created By <%= session.createdBy.firstname + " " + session.createdBy.lastname %></a></em>
         </p>
-        <h4><a><%= classs.instructor %></a></h4>
-        <p><%= classs.time %></p>
-        <p><%= classs.location %></p>
+        <h4><a><%= session.instructor %></a></h4>
+        <p><%= session.time %></p>
+        <p><%= session.location %></p>
     </div>
     <div class="well">
-        <% classs.players.forEach(function(player){ %> 
+        <% session.players.forEach(function(player){ %> 
             <div class="row">
                 <div class="col-md-12">
                     <strong><%= player.firstname %> <%=player.lastname %></strong>
                 </div>
-                <% if(currentUser && classs.createdBy.id.equals(currentUser._id)) { %>
-                        <a class="btn btn-warning" href="/index/<%= classs._id %>/edit">Edit</a>
-                        <form id="delete-form" action="/index/<%= classs._id %>?_method=DELETE" method="POST">
+                <% if(currentUser && session.createdBy.id.equals(currentUser._id)) { %>
+                        <a class="btn btn-warning" href="/index/<%= session._id %>/edit">Edit</a>
+                        <form id="delete-form" action="/index/<%= session._id %>?_method=DELETE" method="POST">
                             <button class="btn btn-danger">Delete</button>
                         </form>
             </div>
@@ -33,8 +33,8 @@
 
 <script>
     function initMap() {
-      var lat = <%= classs.lat %>;
-      var lng = <%= classs.lng %>;
+      var lat = <%= session.lat %>;
+      var lng = <%= session.lng %>;
       var center = {lat: lat, lng: lng };
       var map = new google.maps.Map(document.getElementById('map'), {
           zoom: 8,
@@ -42,9 +42,9 @@
           scrollwheel: false
       });
       var contentString = `
-        <strong><%= classs.name %><br />
-        <%= classs.location %></strong>
-        <p><%= classs.description %></p>
+        <strong><%= session.name %><br />
+        <%= session.location %></strong>
+        <p><%= session.description %></p>
       `
       var infowindow = new google.maps.InfoWindow({
         content: contentString

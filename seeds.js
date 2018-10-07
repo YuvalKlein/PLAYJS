@@ -2,7 +2,7 @@
 var    mongoose        = require("mongoose"),
     User            = require("./models/user"),
     Instructor      = require("./models/instructor"),
-    Class           = require("./models/class");    
+    Class           = require("./models/session");    
     
 var sportName = ["TRX", "Soccer", "Yoga", "Pilatis", "Krav Maga", "Hip Hop"];
 var classAmount = 15;
