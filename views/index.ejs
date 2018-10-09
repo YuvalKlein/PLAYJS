@@ -20,18 +20,16 @@
             <div class="row place"><%= session.location %></div>
       
         </div>
-        <!--if currentUser not sign in -->
         <%session.players.forEach(function(player) {%>
-          <!-- if(!player.id.equals(currentUser._id)){ %> -->
-            <form action="/session/<% session._id %>?_method=PUT" method="POST">
+          <% if(!player.id.equals(currentUser._id)){ %>
+            <form action="/session/<%= session._id %>?_method=PUT" method="POST">
               <div class="p-2 bd-highlight col-3"><input type="submit" class="btn btn-secondary btn-lg" id="book" value="BOOK"></div>
             </form>
-            <!--else ( add toggle for the color)-->
-          <!--  } else { %> -->
-            <!-- <form action="/index/<% session._id %>?_method=DELETE" method="POST">
-              <div class="p-2 bd-highlight col-3"><button type="button" class="btn btn-secondary btn-lg" id="button booked">CANCEL</button></div>
-            </form> -->
-           <!-- } %> -->
+            <%  } else { %>
+              <form action="/session/players/<%= session._id %>?_method=DELETE" method="POST"> 
+              <div class="p-2 bd-highlight col-3"><button type="button" class="btn btn-secondary btn-lg" id="booked">CANCEL</button></div>
+              </form> 
+            <% } %>
         <% }) %>
       </div>
     <% }); %>
