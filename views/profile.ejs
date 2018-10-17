@@ -1,0 +1,25 @@
+<% include partials/header %>
+
+<div class="row">
+    <div class="col-nd-4">
+            <h1><%= user.firstname + " " + user.lastname %></h1>
+        <div class="thumbnail">
+            <img src="<<%= user.avatar %>" alt="user profile image">
+            <div class="caption"><a href="mailto:<%= user.email %>"><%= user.email %></a></div>
+        </div>
+       ipsum     dfrgrdeg aserg aergtaergad zdfg dfh sfghn dj gfhnhj xfn ghfgh dftgh 
+       jh fgh gj tj  fghfghj jfgjh 
+       gjh fghj fgjhfghjrt trh srth 
+       
+    </div>
+    <div class="col-md-8">
+        <h3><%= user.firstName %>'s Sessions:</h3>
+        <ul>
+        <% sessions.forEach(function(session) { %>
+            <li><a href="/sessions/<%= session.id %>"><%= session.title %></a></li>
+        <% }); %>
+        </ul>
+    </div>
+</div>
+
+<% include partials/footer %>

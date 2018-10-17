@@ -7,8 +7,11 @@ var UserSchema = new mongoose.Schema({
    isAdmin: {type: Boolean, default: false},
    isInstructor: {type: Boolean, default: false},
    password: String,
+   resetPasswordToken: String,
+   resetPasswordExpires: Date,
    firstname: String,
    lastname: String,
+   avatar: String,
    created: {type: Date, default: Date.now}
 });
 

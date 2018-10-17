@@ -7,10 +7,10 @@ var express = require("express"),
     flash = require("connect-flash"),
     passport = require("passport"),
     LocalStrategy = require("passport-local"),
-    User = require("./models/user"),
-    Instructor = require("./models/instructor"),
-    Session = require("./models/session"),
-    seedDB = require("./seeds");
+    User = require("./models/user");
+    //Instructor = require("./models/instructor"),
+    //Session = require("./models/session"),
+    //seedDB = require("./seeds");
 
 var indexRoutes = require("./routes/index");
 
