@@ -47,30 +47,22 @@ router.get("/index/new", middleware.isLoggedIn, function(req, res) {
 
 // CREATE SESSION
 router.post("/index", middleware.isLoggedIn, function(req, res){
-    geocoder.geocode(req.body.location, function (err, data) {
+    geocoder.geocode(req.body.session.location, function (err, data) {
         if (err || !data.length) {
             console.log("data " + data);
           req.flash('error', 'Invalid address');
           return res.redirect('back');
         } 
-        var lat = data[0].latitude;
-        var lng = data[0].longitude;
-        var location = data[0].formattedAddress;
-    var newSession = {
-        title: req.body.title,
-        image: req.body.image, 
-        location: location,
-        lat: lat,
-        lng: lng, 
-        time: req.body.time,
-        players: [{id: req.user._id, firstname: req.user.firstname, lastname: req.user.lastname}],
-        createdBy: {id: req.user._id, firstname: req.user.firstname, lastname: req.user.lastname},
-        instructor: {id: req.body.instructor._id, firstname: req.body.instructor.firstname, lastname: req.body.instructor.lastname}
-    };
-    console.log("newSession.instructor" + newSession.instructor);
-    console.log("req.body.instructor" + req.body.instructor);
+        req.body.session.lat = data[0].latitude;
+        req.body.session.lng = data[0].longitude;
+        req.body.session.location = data[0].formattedAddress;
+        req.body.session.players = [{id: req.user._id, firstname: req.user.firstname, lastname: req.user.lastname}];
+        req.body.session.createdBy = {id: req.user._id, firstname: req.user.firstname, lastname: req.user.lastname};
+        console.log("req.body.session= " + req.body.session.players);
+        console.log("req.body.session= " + req.body.session.image);
+        console.log("req.body.session= " + req.body.session.Instructor);
 
-        Session.create(newSession, function(err, createdSession){
+        Session.create(req.body.session, function(err, createdSession){
             if(err){
                 console.log(err);
             } else {
