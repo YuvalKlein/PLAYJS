@@ -8,7 +8,28 @@ var express = require("express"),
     NodeGeocoder = require('node-geocoder'),
     async = require("async"),
     nodemailer = require("nodemailer"),
-    crypto = require("crypto");
+    crypto = require("crypto"),
+    multer = require('multer'),
+    storage = multer.diskStorage({
+        filename: function(req, file, callback) {
+        callback(null, Date.now() + file.originalname);
+    }
+    }),
+    imageFilter = function (req, file, cb) {
+        // accept image files only
+        if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/i)) {
+            return cb(new Error('Only image files are allowed!'), false);
+        }
+        cb(null, true);
+    };
+var upload = multer({ storage: storage, fileFilter: imageFilter});
+
+var cloudinary = require('cloudinary');
+cloudinary.config({ 
+  cloud_name: 'yuklein', 
+  api_key: process.env.CLOUDINARY_API_KEY, 
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
  
 var options = {
   provider: 'google',
@@ -53,27 +74,20 @@ router.post("/index", middleware.isLoggedIn, function(req, res){
           req.flash('error', 'Invalid address');
           return res.redirect('back');
         } 
-        var lat = data[0].latitude;
-        var lng = data[0].longitude;
-        var location = data[0].formattedAddress;
-    var newSession = {
-        title: req.body.title,
-        image: req.body.image, 
-        location: location,
-        lat: lat,
-        lng: lng, 
-        time: req.body.time,
-        players: [{id: req.user._id, firstname: req.user.firstname, lastname: req.user.lastname}],
-        createdBy: {id: req.user._id, firstname: req.user.firstname, lastname: req.user.lastname},
-        instructor: {id: req.body.instructor._id, firstname: req.body.instructor.firstname, lastname: req.body.instructor.lastname}
-    };
-    console.log("newSession.instructor" + newSession.instructor);
-    console.log("req.body.instructor" + req.body.instructor);
+        req.body.session.lat = data[0].latitude;
+        req.body.session.lng = data[0].longitude;
+        req.body.session.location = data[0].formattedAddress;
+        req.body.session.players = [{id: req.user._id, firstname: req.user.firstname, lastname: req.user.lastname}],
+        req.body.session.createdBy = {id: req.user._id, firstname: req.user.firstname, lastname: req.user.lastname},
+        
+    console.log("session= " + req.body.session);
 
-        Session.create(newSession, function(err, createdSession){
+        Session.create(req.body.session, function(err, createdSession){
             if(err){
                 console.log(err);
+                console.log("session= " + req.body.session);
             } else {
+                console.log("session= " + req.body.session);
                 res.redirect(`/index/${createdSession._id.toString()}`);
             }
         });
@@ -151,9 +165,9 @@ router.put("/index/:id", middleware.checkSessionOwnership, function(req, res) {
           req.flash('error', 'Invalid address');
           return res.redirect('back');
         }
-        req.body.campground.lat = data[0].latitude;
-        req.body.campground.lng = data[0].longitude;
-        req.body.campground.location = data[0].formattedAddress;
+        req.body.session.lat = data[0].latitude;
+        req.body.session.lng = data[0].longitude;
+        req.body.session.location = data[0].formattedAddress;
     
         Session.findByIdAndUpdate(req.params.id, req.body.session, function(err, updatedSession){
             if(err){
