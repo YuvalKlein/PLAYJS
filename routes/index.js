@@ -8,7 +8,28 @@ var express = require("express"),
     NodeGeocoder = require('node-geocoder'),
     async = require("async"),
     nodemailer = require("nodemailer"),
-    crypto = require("crypto");
+    crypto = require("crypto"),
+    multer = require('multer'),
+    storage = multer.diskStorage({
+        filename: function(req, file, callback) {
+        callback(null, Date.now() + file.originalname);
+    }
+    }),
+    imageFilter = function (req, file, cb) {
+        // accept image files only
+        if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/i)) {
+            return cb(new Error('Only image files are allowed!'), false);
+        }
+        cb(null, true);
+    };
+var upload = multer({ storage: storage, fileFilter: imageFilter});
+
+var cloudinary = require('cloudinary');
+cloudinary.config({ 
+  cloud_name: 'yuklein', 
+  api_key: process.env.CLOUDINARY_API_KEY, 
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
  
 var options = {
   provider: 'google',
@@ -46,7 +67,7 @@ router.get("/index/new", middleware.isLoggedIn, function(req, res) {
 });
 
 // CREATE SESSION
-router.post("/index", middleware.isLoggedIn, function(req, res){
+router.post("/index", middleware.isLoggedIn, upload.single('session[image]'), function(req, res){
     geocoder.geocode(req.body.session.location, function (err, data) {
         if (err || !data.length) {
             console.log("data " + data);
@@ -58,16 +79,17 @@ router.post("/index", middleware.isLoggedIn, function(req, res){
         req.body.session.location = data[0].formattedAddress;
         req.body.session.players = [{id: req.user._id, firstname: req.user.firstname, lastname: req.user.lastname}];
         req.body.session.createdBy = {id: req.user._id, firstname: req.user.firstname, lastname: req.user.lastname};
-        console.log("req.body.session= " + req.body.session.players);
-        console.log("req.body.session= " + req.body.session.image);
-        console.log("req.body.session= " + req.body.session.Instructor);
+        cloudinary.uploader.upload(req.file.path, function(result) {
+            // add cloudinary url for the image to the campground object under image property
+            req.body.session.image = result.secure_url;
 
-        Session.create(req.body.session, function(err, createdSession){
-            if(err){
-                console.log(err);
-            } else {
-                res.redirect(`/index/${createdSession._id.toString()}`);
-            }
+            Session.create(req.body.session, function(err, createdSession){
+                if(err){
+                    console.log(err);
+                } else {
+                    res.redirect(`/index/${createdSession._id.toString()}`);
+                }
+            });
         });
     });   
 });   
@@ -188,7 +210,7 @@ router.post("/register", function(req, res){
             return res.render("register");
         }
         passport.authenticate("local")(req, res, function(){
-            req.flash("success", "Welcome" + user.firstname);
+            req.flash("success", "Welcome " + user.firstname);
             res.redirect("/index");
             
         });
