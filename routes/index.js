@@ -92,7 +92,7 @@ router.post("/index", middleware.isLoggedIn, function(req, res){
             }
         });
     });   
-});   
+});     
 
 // SHOW SESSION
 router.get("/index/:id", function(req, res) {
